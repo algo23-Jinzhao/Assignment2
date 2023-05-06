@@ -1,4 +1,4 @@
-from strategyTemplate import BasicStrategy
+from template import BasicStrategy
 
 class RUMIStrategy(BasicStrategy):
     def __init__(self, initial_data) -> None:
@@ -6,12 +6,12 @@ class RUMIStrategy(BasicStrategy):
         
     def get_signal(self, parameters:list) -> list:
         df2 = self.df2
-        fast_window, slow_window, rumi_window = parameters
+        fast_window, slow_window = parameters
 
         sma = df2['close'].rolling(fast_window).mean().shift()
         lma = df2['close'].rolling(slow_window).mean().shift()
         ma_diff = sma - lma
-        rumi_value = ma_diff.rolling(rumi_window).mean()
+        rumi_value = ma_diff.rolling(fast_window).mean()
 
         signal = [0]*slow_window
         for i in range(slow_window, len(df2.index)-1):
