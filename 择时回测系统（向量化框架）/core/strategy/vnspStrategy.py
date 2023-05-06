@@ -1,4 +1,4 @@
-from strategyTemplate import BasicStrategy
+from template import BasicStrategy
 import numpy as np
 
 def LLT(data, d):
@@ -13,7 +13,7 @@ def get_factors(df, n):
     for i in range(n, len(df.index)-1):
         # 得到i-1到i-n这段的数据, 换手率计算权重
         initial_array = 1 - df.loc[df.index[i-n]:df.index[i-1], 'average'] / df.loc[df.index[i], 'average']
-        array_1 = df.loc[df.index[i-n]:df.index[i-1], 'turnover_ratio']
+        array_1 = df.loc[df.index[i-n]:df.index[i-1], 'turn'] / 100
         array_2 = (1-array_1).iloc[::-1].shift().fillna(1).cumprod().iloc[::-1]
         w_array = array_1 * array_2
         w_array_pct = w_array / w_array.sum()
@@ -34,8 +34,10 @@ class VNSPStrategy(BasicStrategy):
         super(VNSPStrategy, self).__init__(initial_data)
         
     def get_signal(self, parameters:list) -> list:
-        df2 = self.df2
-        n, d, d_vnsp = parameters
+        df2 = self.df2.copy()
+        df2['average'] = df2['amount'] / df2['volume']
+        n, d = parameters
+        d_vnsp = 5
         df_factors = get_factors(df2, n) 
         df_factors['gain_llt'] = LLT(df_factors['gain'], d)
         df_factors['loss_llt'] = LLT(df_factors['loss'], d)

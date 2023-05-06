@@ -1,4 +1,4 @@
-from strategyTemplate import BasicStrategy
+from template import BasicStrategy
 
 def LLT(data, d):
     llt = [(data[0]+data[1])/2, (data[0]+data[1])/2]

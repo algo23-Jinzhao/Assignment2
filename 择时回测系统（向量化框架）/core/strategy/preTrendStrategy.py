@@ -1,4 +1,4 @@
-from strategyTemplate import BasicStrategy
+from template import BasicStrategy
 
 class PreTrendStrategy(BasicStrategy):
     def __init__(self, initial_data) -> None:

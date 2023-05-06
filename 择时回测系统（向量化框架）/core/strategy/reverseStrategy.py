@@ -1,4 +1,4 @@
-from strategyTemplate import BasicStrategy
+from template import BasicStrategy
 
 class ReverseStrategy(BasicStrategy):
     def __init__(self, initial_data) -> None:
@@ -10,11 +10,12 @@ class ReverseStrategy(BasicStrategy):
         back_return = (df2['close'].shift() / df2['close'].shift(2) - 1).rolling(reverse_window).mean()
 
         signal = [0]*reverse_window
-        for i in range(reverse_window, len(back_return)):
+        for i in range(reverse_window, len(back_return)-1):
             if back_return[i] < 0: 
                 signal.append(1)
             elif back_return[i] > 0: 
                 signal.append(-1)
             else:
                 signal.append(signal[-1]) # 跟随趋势
+        signal.append(-1)
         return signal
